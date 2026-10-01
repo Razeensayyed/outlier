@@ -7,3 +7,6 @@ venv/
 service-account*.json
 .pytest_cache/
 .ruff_cache/
+
+# Remotion render output
+out/
