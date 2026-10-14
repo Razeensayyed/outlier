@@ -388,8 +388,9 @@ footer { border-top: 1px solid var(--border); padding-block: 40px; }
 }
 #overlay.on { display: flex; }
 #modal-box {
-  background: var(--bg-2); border: 1px solid var(--border); border-radius: 5px;
-  padding: 40px; max-width: 460px; width: 100%; position: relative;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 5px;
+  padding: 40px 40px 0; max-width: 520px; width: 100%; position: relative;
+  max-height: 90vh; overflow-y: auto;
 }
 #modal-x {
   position: absolute; top: 14px; right: 16px;
@@ -486,7 +487,7 @@ footer { border-top: 1px solid var(--border); padding-block: 40px; }
         <div class="bar-brand">Athlete Engine</div>
         <div class="bar-meta">100 Day Athletic Program</div>
       </div>
-      <button class="btn btn-accent" onclick="window.open('https://tally.so/r/pbjjb1','_blank')" >Join the Waitlist</button>
+      <button class="btn btn-accent" onclick="openModal()">Join the Waitlist</button>
     </div>
   </div>
 </div>
@@ -495,60 +496,10 @@ footer { border-top: 1px solid var(--border); padding-block: 40px; }
 <div id="overlay" role="dialog" aria-modal="true" aria-label="Join waitlist">
   <div id="modal-box">
     <button id="modal-x" onclick="closeModal()" aria-label="Close">✕</button>
-    <div id="m-form-wrap">
-      <div class="modal-h">Secure Early Access</div>
-      <div class="modal-sub">Lock in the founding member rate before it closes.</div>
-      <div class="modal-price-strip">
-        <span class="mp-now">Rs 1,399</span>
-        <span class="mp-was">Rs 1,999</span>
-        <span class="mp-note">Waitlist price · Save Rs 600</span>
-      </div>
-      <form id="wl-form" novalidate>
-        <div class="fgrp">
-          <label class="flbl" for="f-name">Full Name</label>
-          <input class="finp" type="text" id="f-name" placeholder="Your name" required>
-        </div>
-        <div class="frow">
-          <div class="fgrp">
-            <label class="flbl" for="f-email">Email</label>
-            <input class="finp" type="email" id="f-email" placeholder="you@email.com" required>
-          </div>
-          <div class="fgrp">
-            <label class="flbl" for="f-phone">WhatsApp</label>
-            <input class="finp" type="tel" id="f-phone" placeholder="+91 98765 43210">
-          </div>
-        </div>
-        <div class="frow">
-          <div class="fgrp">
-            <label class="flbl" for="f-days">Training days/week</label>
-            <select class="fsel" id="f-days">
-              <option value="">Select</option>
-              <option>1–2 days</option>
-              <option>3–4 days</option>
-              <option>5–6 days</option>
-              <option>Every day</option>
-            </select>
-          </div>
-          <div class="fgrp">
-            <label class="flbl" for="f-goal">Main Goal</label>
-            <select class="fsel" id="f-goal">
-              <option value="">Select</option>
-              <option>Build stamina</option>
-              <option>Sport performance</option>
-              <option>Lose fat, stay strong</option>
-              <option>Run 5K / 10K</option>
-              <option>Overall fitness</option>
-            </select>
-          </div>
-        </div>
-        <button type="submit" class="btn btn-accent" id="m-submit">Join Waitlist at Rs 1,399 →</button>
-      </form>
-    </div>
-    <div id="m-success">
-      <div class="tick">✓</div>
-      <h3>You're in.</h3>
-      <p>We'll send you access details and the founding member checkout link on WhatsApp and email.</p>
-    </div>
+    <iframe id="tally-iframe"
+      src="https://tally.so/embed/pbjjb1?alignLeft=1&hideTitle=0&transparentBackground=1&dynamicHeight=1"
+      width="100%" height="500" frameborder="0" marginheight="0" marginwidth="0"
+      title="Athlete Engine Waitlist" style="display:block;"></iframe>
   </div>
 </div>
 
@@ -569,7 +520,7 @@ footer { border-top: 1px solid var(--border); padding-block: 40px; }
       <span class="trust-chip">1 Hour / Session</span>
     </div>
     <div class="hero-actions">
-      <button class="btn btn-accent" onclick="window.open('https://tally.so/r/pbjjb1','_blank')" >Join Waitlist at Rs 1,399 →</button>
+      <button class="btn btn-accent" onclick="openModal()">Join Waitlist at Rs 1,399 →</button>
     </div>
     <p class="hero-price-note" style="margin-top:16px;">Early access pricing · Regular price <strong>Rs 1,999</strong> · 1:1 coaching plan available at <strong>Rs 6,999</strong></p>
   </div>
@@ -928,7 +879,7 @@ footer { border-top: 1px solid var(--border); padding-block: 40px; }
             <div class="plan-feat">Athlete Community Access</div>
             <div class="plan-feat">All founding member bonuses</div>
           </div>
-          <button class="btn btn-accent plan-cta-btn" onclick="window.open('https://tally.so/r/pbjjb1','_blank')" >Join Waitlist at Rs 1,399 →</button>
+          <button class="btn btn-accent plan-cta-btn" onclick="openModal()">Join Waitlist at Rs 1,399 →</button>
         </div>
       </div>
 
@@ -954,7 +905,7 @@ footer { border-top: 1px solid var(--border); padding-block: 40px; }
             <div class="plan-feat">Personalised nutrition planning</div>
             <div class="plan-feat">First 25: 1-on-1 onboarding call included</div>
           </div>
-          <button class="btn btn-outline plan-cta-btn" onclick="window.open('https://tally.so/r/pbjjb1','_blank')" >Join Waitlist →</button>
+          <button class="btn btn-outline plan-cta-btn" onclick="openModal()">Join Waitlist →</button>
         </div>
       </div>
     </div>
@@ -1062,7 +1013,7 @@ footer { border-top: 1px solid var(--border); padding-block: 40px; }
     <h2 class="display big">100 days from now,<br><em>you could be<br>the fittest person<br>on the field.</em></h2>
     <p class="sub">Or you could be exactly where you are. The founding cohort opens soon. Waitlist members get first access and Rs 600 off.</p>
     <div class="cta-group">
-      <button class="btn btn-accent" style="font-size:17px;padding:18px 36px;" onclick="window.open('https://tally.so/r/pbjjb1','_blank')" >Join Waitlist at Rs 1,399 →</button>
+      <button class="btn btn-accent" style="font-size:17px;padding:18px 36px;" onclick="openModal()">Join Waitlist at Rs 1,399 →</button>
     </div>
     <p class="price-hint">Regular price <strong>Rs 1,999</strong> · 1:1 coaching <strong>Rs 6,999</strong> · No instalments · One-time payment</p>
   </div>
