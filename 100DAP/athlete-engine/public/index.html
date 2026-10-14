@@ -422,9 +422,14 @@ footer { border-top: 1px solid var(--border); padding-block: 40px; }
 
 /* ── RESPONSIVE ──────────────────────────────────────────────────── */
 @media (max-width: 820px) {
+  .section         { padding-block: 56px; }
+  #hero            { padding-block: 72px 60px; }
+  #cta-end         { padding-block: 72px; }
+
   .problem-split   { grid-template-columns: 1fr; }
-  .problem-checks  { grid-template-columns: 1fr; }
+  .problem-checks  { grid-template-columns: repeat(2,1fr); }
   .coach-grid      { grid-template-columns: 1fr; }
+  .coach-visual    { max-width: 320px; }
   .phases-grid     { grid-template-columns: repeat(2,1fr); }
   .benchmarks-row  { grid-template-columns: repeat(3,1fr); }
   .inside-grid     { grid-template-columns: 1fr; }
@@ -432,12 +437,40 @@ footer { border-top: 1px solid var(--border); padding-block: 40px; }
   .guarantee-grid  { grid-template-columns: 1fr; }
   .who-cols        { grid-template-columns: 1fr; }
   .frow            { grid-template-columns: 1fr; }
+
+  .bar-meta        { display: none; }
+  .bar-inner       { padding-block: 10px; gap: 10px; flex-wrap: nowrap; }
+  .bar-inner .btn  { padding: 10px 16px; font-size: 13px; white-space: nowrap; }
+
+  #modal-box       { padding: 28px 20px; }
 }
 @media (max-width: 500px) {
-  .phases-grid  { grid-template-columns: 1fr; }
-  .benchmarks-row { grid-template-columns: 1fr; }
-  .week-grid    { gap: 4px; }
-  .wday         { font-size: 10px; padding: 10px 4px; }
+  .section         { padding-block: 44px; }
+  #hero            { padding-block: 56px 44px; }
+  #cta-end         { padding-block: 56px; }
+
+  .problem-checks  { grid-template-columns: 1fr; }
+  .phases-grid     { grid-template-columns: 1fr; }
+  .benchmarks-row  { grid-template-columns: repeat(3,1fr); }
+  .week-grid       { gap: 4px; }
+  .wday            { font-size: 10px; padding: 10px 4px; }
+
+  .plan-header     { padding: 20px 20px 0; }
+  .plan-price-block { padding: 18px 20px; }
+  .plan-body       { padding: 18px 20px; }
+  .plan-price-early .big { font-size: 34px; }
+
+  .gtile           { padding: 22px; }
+  .total-bar       { padding: 18px 20px; }
+  .total-num       { font-size: 30px; }
+
+  .hero-actions    { flex-direction: column; align-items: flex-start; }
+  .hero-actions .btn { width: 100%; justify-content: center; }
+
+  .cta-group       { flex-direction: column; align-items: center; }
+  .cta-group .btn  { width: 100%; max-width: 360px; justify-content: center; }
+
+  .bonus-row       { flex-wrap: wrap; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
