@@ -111,7 +111,8 @@ a { color: inherit; text-decoration: none; }
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
   padding-block: 12px; flex-wrap: wrap;
 }
-.bar-brand { font-size: 17px; font-weight: 900; text-transform: uppercase; letter-spacing: .05em; color: var(--white); }
+.bar-brand { display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 900; text-transform: uppercase; letter-spacing: .05em; color: var(--white); }
+.bar-logo  { height: 32px; width: auto; display: block; }
 .bar-meta  { font-size: 12px; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
 
 /* ── HERO ────────────────────────────────────────────────────────── */
@@ -486,7 +487,7 @@ footer { border-top: 1px solid var(--border); padding-block: 40px; }
   <div class="wrap">
     <div class="bar-inner">
       <div>
-        <div class="bar-brand">Athlete Engine</div>
+        <div class="bar-brand"><img src="/logo.png" alt="Athlete Engine" class="bar-logo">Athlete Engine</div>
         <div class="bar-meta">100 Day Athletic Program</div>
       </div>
       <button class="btn btn-accent" onclick="openModal()">Join the Waitlist</button>
