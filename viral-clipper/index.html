@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Viral Clipper</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<div id="app">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-icon">&#9889;</div>
+    <div>
+      <h1>Viral Clipper</h1>
+      <p>AI-powered clip extraction</p>
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <div class="section" id="settings-section">
+    <div class="collapsible-header" id="settings-toggle">
+      <span class="section-title">&#9881; Settings</span>
+      <span class="chevron">&#9660;</span>
+    </div>
+    <div class="collapsible-body" id="settings-body">
+      <div class="input-group">
+        <label>OpenAI API Key (Whisper)</label>
+        <div class="input-with-toggle">
+          <input type="password" id="openai-key" placeholder="sk-..." />
+          <button class="toggle-btn" onclick="toggleVis('openai-key')">&#128065;</button>
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Anthropic API Key (Claude)</label>
+        <div class="input-with-toggle">
+          <input type="password" id="anthropic-key" placeholder="sk-ant-..." />
+          <button class="toggle-btn" onclick="toggleVis('anthropic-key')">&#128065;</button>
+        </div>
+      </div>
+      <div class="input-row">
+        <div class="input-group" style="flex-direction:row;align-items:center;gap:6px">
+          <label style="margin:0;white-space:nowrap">Clip length (sec)</label>
+          <input type="number" id="clip-min" value="30" min="10" max="180" style="width:60px" />
+          <span style="color:var(--text-muted);font-size:11px">to</span>
+          <input type="number" id="clip-max" value="90" min="10" max="300" style="width:60px" />
+        </div>
+        <button class="btn-sm" onclick="saveKeys()">Save Keys</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sequence info -->
+  <div class="seq-info" id="seq-info">
+    <span class="seq-info-label">Active sequence:</span>
+    <span class="seq-info-value" id="seq-name">None detected</span>
+    <button class="btn-sm" style="margin-left:auto" onclick="refreshSequence()">Refresh</button>
+  </div>
+
+  <!-- Run button -->
+  <button class="btn-primary" id="run-btn" onclick="runPipeline()" disabled>
+    &#9889; Find Viral Clips
+  </button>
+
+  <!-- Status -->
+  <div class="status-bar">
+    <div class="status-dot" id="status-dot"></div>
+    <span class="status-text" id="status-text">Open a sequence in Premiere to get started</span>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap" id="progress-wrap" style="display:none">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
+
+  <!-- Pipeline steps -->
+  <div class="pipeline" id="pipeline" style="display:none">
+    <div class="step" id="step-read">
+      <div class="step-icon">&#127909;</div>
+      <div class="step-info">
+        <div class="step-name">Read sequence</div>
+        <div class="step-desc">Get video file path from Premiere</div>
+      </div>
+      <div class="step-status">waiting</div>
+    </div>
+    <div class="step" id="step-transcribe">
+      <div class="step-icon">&#127908;</div>
+      <div class="step-info">
+        <div class="step-name">Transcribe</div>
+        <div class="step-desc">OpenAI Whisper speech-to-text</div>
+      </div>
+      <div class="step-status">waiting</div>
+    </div>
+    <div class="step" id="step-analyse">
+      <div class="step-icon">&#129504;</div>
+      <div class="step-info">
+        <div class="step-name">Find viral moments</div>
+        <div class="step-desc">Claude AI analyses transcript</div>
+      </div>
+      <div class="step-status">waiting</div>
+    </div>
+    <div class="step" id="step-cut">
+      <div class="step-icon">&#9986;</div>
+      <div class="step-info">
+        <div class="step-name">Cut clips</div>
+        <div class="step-desc">Create sequences in Premiere</div>
+      </div>
+      <div class="step-status">waiting</div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="results" class="hidden">
+    <div class="section-title" style="margin-bottom:8px">&#10024; 3 Viral Clips Found</div>
+    <div class="clips-container" id="clips-container"></div>
+  </div>
+
+  <div class="footer">Viral Clipper v1.0 &bull; Powered by Whisper + Claude</div>
+
+</div>
+
+<script src="js/CSInterface.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
