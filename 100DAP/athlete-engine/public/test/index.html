@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Hybrid Athlete Test</title>
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=JetBrains+Mono:wght@500;700&display=swap">
+
+<style>
+/* ── TOKENS (matches main site) ─────────────────────────────────── */
+:root {
+  --bg:        #090908;
+  --bg-2:      #111110;
+  --bg-3:      #1C1C19;
+  --border:    #282825;
+  --border-2:  #333330;
+  --text:      #E6E3D8;
+  --muted:     #888680;
+  --accent:    #C8F000;
+  --accent-fg: #090908;
+  --danger:    #FF4530;
+  --good:      #22C55E;
+  --warn:      #F59E0B;
+  --white:     #F2F0E6;
+  --bar-bg:    rgba(9,9,8,.95);
+  --font:      'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --display:   'Big Shoulders Display', 'Arial Narrow', Impact, sans-serif;
+  --mono:      'JetBrains Mono', ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  --bg:        #FFFFFF;
+  --bg-2:      #F4F4F4;
+  --bg-3:      #EBEBEB;
+  --border:    #DEDEDE;
+  --border-2:  #CCCCCC;
+  --text:      #1A1A1A;
+  --muted:     #666666;
+  --accent:    #E50000;
+  --accent-fg: #FFFFFF;
+  --danger:    #CC0000;
+  --good:      #16A34A;
+  --warn:      #D97706;
+  --white:     #111111;
+  --bar-bg:    rgba(255,255,255,.95);
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  padding-bottom: 80px;
+}
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; font-family: var(--font); border: none; }
+
+/* ── LAYOUT ────────────────────────────────────────────────────── */
+.wrap {
+  max-width: 1080px;
+  margin-inline: auto;
+  padding-left:  max(20px, env(safe-area-inset-left,  0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+
+/* ── LIQUID GLASS NAVBAR ────────────────────────────────────────── */
+#bar {
+  position: fixed;
+  top: max(16px, env(safe-area-inset-top, 16px));
+  left: 50%; transform: translateX(-50%);
+  z-index: 100;
+  width: calc(100% - 40px); max-width: 1060px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(255,255,255,.08) 0%, rgba(255,255,255,.03) 50%, rgba(255,255,255,.06) 100%);
+  backdrop-filter: blur(28px) saturate(200%) brightness(1.1);
+  -webkit-backdrop-filter: blur(28px) saturate(200%) brightness(1.1);
+  border: 1px solid rgba(255,255,255,.18);
+  border-bottom-color: rgba(255,255,255,.07);
+  box-shadow: 0 8px 32px rgba(0,0,0,.45), 0 1px 0 rgba(255,255,255,.12) inset, 0 -1px 0 rgba(0,0,0,.2) inset;
+}
+:root[data-theme="light"] #bar {
+  background: linear-gradient(135deg, rgba(255,255,255,.65) 0%, rgba(255,255,255,.45) 50%, rgba(255,255,255,.55) 100%);
+  border-color: rgba(255,255,255,.9);
+  border-bottom-color: rgba(200,200,200,.4);
+  box-shadow: 0 8px 32px rgba(0,0,0,.12), 0 1px 0 rgba(255,255,255,.9) inset, 0 -1px 0 rgba(0,0,0,.05) inset;
+}
+.bar-inner {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 10px 20px; flex-wrap: nowrap;
+}
+.bar-brand {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 16px; font-weight: 900; text-transform: uppercase; letter-spacing: .05em;
+  color: var(--white);
+}
+.bar-logo { height: 30px; width: auto; display: block; }
+.bar-meta { font-size: 11px; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
+.bar-right { display: flex; align-items: center; gap: 10px; }
+#theme-toggle {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 10px;
+  padding: 6px 10px;
+  color: var(--text);
+  font-size: 18px; line-height: 1;
+  backdrop-filter: blur(4px);
+  transition: background .2s, transform .15s;
+}
+#theme-toggle:hover { background: rgba(255,255,255,.15); transform: scale(1.05); }
+:root[data-theme="light"] #theme-toggle { background: rgba(0,0,0,.06); border-color: rgba(0,0,0,.12); }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px 20px;
+  font-family: var(--font); font-size: 14px; font-weight: 700;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.3);
+  transition: opacity .15s, transform .15s;
+}
+.btn:hover { opacity: .85; transform: translateY(-1px); }
+.btn-accent { background: var(--accent); color: var(--accent-fg); }
+.btn-ghost  { background: rgba(255,255,255,.08); color: var(--text); border: 1px solid rgba(255,255,255,.15); }
+:root[data-theme="light"] .btn-ghost { background: rgba(0,0,0,.06); border-color: rgba(0,0,0,.12); }
+
+/* ── PAGE HEADER ─────────────────────────────────────────────────── */
+.page-header {
+  padding-top: 130px;
+  padding-bottom: 48px;
+  border-bottom: 1px solid var(--border);
+}
+.eyebrow {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.eyebrow::before { content: ''; display: block; width: 24px; height: 2px; background: var(--accent); }
+.page-title {
+  font-family: var(--display); font-weight: 900;
+  font-size: clamp(44px, 7vw, 88px); line-height: .92;
+  text-transform: uppercase; letter-spacing: -.02em;
+  color: var(--white); margin-bottom: 20px;
+}
+.page-title em { color: var(--accent); font-style: italic; }
+.page-lede { font-size: clamp(15px, 2vw, 17px); color: var(--muted); max-width: 600px; line-height: 1.7; margin-bottom: 24px; }
+.meta-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  padding: 5px 12px; border: 1px solid var(--border-2);
+  border-radius: 999px; color: var(--muted); background: var(--bg-2);
+}
+
+/* ── MAIN GRID ───────────────────────────────────────────────────── */
+.test-grid {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) 340px;
+  gap: 24px;
+  align-items: start;
+  padding-top: 36px;
+}
+
+/* ── GENDER TOGGLE ───────────────────────────────────────────────── */
+.gender-bar {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 18px; margin-bottom: 14px;
+}
+.gender-bar .lbl { font-size: 13px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.seg { display: inline-flex; border: 1px solid var(--border-2); border-radius: 999px; overflow: hidden; }
+.seg button {
+  font: 600 13px var(--font); border: 0; background: transparent;
+  color: var(--muted); padding: 7px 18px; cursor: pointer; transition: background .15s, color .15s;
+}
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); }
+.sample-note { font-size: 13px; color: var(--muted); margin-left: auto; }
+.sample-note button {
+  font: inherit; color: var(--accent); background: none; border: 0;
+  cursor: pointer; text-decoration: underline; padding: 0;
+}
+
+/* ── STATION CARDS ───────────────────────────────────────────────── */
+.stations { display: flex; flex-direction: column; gap: 12px; }
+.st {
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px 22px;
+  display: grid;
+  grid-template-columns: 48px minmax(0,1fr) auto;
+  grid-template-rows: auto auto auto;
+  gap: 4px 14px;
+  align-items: start;
+  transition: border-color .2s;
+}
+.st.weak { border-color: var(--danger); }
+.st-num {
+  font-family: var(--display); font-weight: 900; font-size: 36px;
+  line-height: 1; color: var(--accent); grid-row: 1;
+}
+.st-title { font-family: var(--display); font-size: 22px; font-weight: 700; text-transform: uppercase; letter-spacing: .02em; color: var(--white); line-height: 1.1; margin: 0; }
+.st-how { font-size: 13px; color: var(--muted); margin: 4px 0 0; line-height: 1.55; }
+.st-pts { grid-column: 3; grid-row: 1 / span 3; text-align: right; align-self: center; }
+.st-pts b { display: block; font-family: var(--mono); font-size: 28px; font-variant-numeric: tabular-nums; color: var(--text); line-height: 1; }
+.st-pts small { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.st-inp {
+  grid-column: 2 / 3; grid-row: 3;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px;
+}
+.st-inp input {
+  width: 80px; font: 700 18px var(--mono);
+  padding: 8px 10px; border: 1.5px solid var(--border-2);
+  border-radius: 8px; background: var(--bg-3);
+  color: var(--text); font-variant-numeric: tabular-nums;
+  outline: none; transition: border-color .15s, box-shadow .15s;
+}
+.st-inp input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.st-inp .u { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.st-bar { grid-column: 2 / 4; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+.st-bar i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .35s ease; }
+.st.weak .st-bar i { background: var(--danger); }
+
+/* ── LEGEND ──────────────────────────────────────────────────────── */
+.legend {
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 22px 24px; margin-top: 12px;
+}
+.legend h2 { font-family: var(--display); text-transform: uppercase; font-size: 22px; color: var(--white); margin-bottom: 12px; }
+.legend ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; line-height: 1.65; display: flex; flex-direction: column; gap: 6px; }
+
+/* ── SCORE PANEL ─────────────────────────────────────────────────── */
+.panel {
+  position: sticky;
+  top: calc(max(16px, env(safe-area-inset-top,16px)) + 72px);
+  background: var(--bg-3); border: 1px solid var(--border-2);
+  border-radius: 16px; padding: 24px;
+  display: flex; flex-direction: column; gap: 20px;
+}
+.panel-eyebrow {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--accent);
+}
+.score-row { display: flex; align-items: baseline; gap: 8px; }
+.score-big {
+  font-family: var(--display); font-weight: 900;
+  font-size: 96px; line-height: .85;
+  font-variant-numeric: tabular-nums; color: var(--accent);
+}
+.score-denom { font-family: var(--mono); font-size: 18px; color: var(--muted); }
+.level-name {
+  font-family: var(--display); font-weight: 900;
+  font-size: 30px; text-transform: uppercase;
+  color: var(--white); line-height: 1;
+}
+.level-desc { font-size: 14px; color: var(--muted); margin-top: 4px; line-height: 1.55; }
+.ladder { display: grid; grid-template-columns: repeat(4,1fr); gap: 4px; }
+.ladder div {
+  font-family: var(--mono); font-size: 9px; letter-spacing: .06em;
+  text-transform: uppercase; padding: 7px 4px 5px;
+  border-top: 3px solid var(--border); color: var(--muted);
+  text-align: center; transition: border-color .2s, color .2s;
+}
+.ladder div.on { border-color: var(--accent); color: var(--text); }
+.weakbox { border-top: 1px solid var(--border); padding-top: 18px; display: flex; flex-direction: column; gap: 6px; }
+.weakbox .wt { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.weakbox h4 { font-family: var(--display); font-size: 22px; text-transform: uppercase; color: var(--white); margin: 0; }
+.weakbox p { font-size: 13px; color: var(--muted); margin: 0; line-height: 1.6; }
+.panel-cta {
+  background: var(--accent); color: var(--accent-fg);
+  border-radius: 12px; padding: 16px 18px;
+}
+.panel-cta b { display: block; font-family: var(--display); font-size: 20px; text-transform: uppercase; letter-spacing: .02em; margin-bottom: 4px; }
+.panel-cta p { font-size: 13px; line-height: 1.5; opacity: .85; }
+.copy-btn {
+  font: 600 13px var(--font);
+  border: 1.5px solid var(--border-2);
+  background: transparent; color: var(--text);
+  border-radius: 999px; padding: 9px 16px;
+  transition: border-color .15s, color .15s;
+}
+.copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── RESPONSIVE ──────────────────────────────────────────────────── */
+@media (max-width: 860px) {
+  .test-grid { grid-template-columns: 1fr; }
+  .panel { position: static; }
+  .page-header { padding-top: 110px; }
+  #bar { width: calc(100% - 24px); border-radius: 16px; }
+  .bar-inner { padding: 8px 14px; gap: 8px; }
+  .bar-meta { display: none; }
+  .btn { padding: 9px 14px; font-size: 12px; }
+}
+@media (max-width: 500px) {
+  .st { grid-template-columns: 38px minmax(0,1fr) auto; }
+  .st-num { font-size: 28px; }
+  .score-big { font-size: 76px; }
+  .page-header { padding-top: 96px; padding-bottom: 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: .01ms !important; }
+  .st-bar i { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div id="bar">
+  <div class="wrap">
+    <div class="bar-inner">
+      <div>
+        <div class="bar-brand">
+          <a href="/" style="display:flex;align-items:center;gap:10px;">
+            <img src="/logo.png" alt="Athlete Engine" class="bar-logo">Athlete Engine
+          </a>
+        </div>
+        <div class="bar-meta">100 Day Athletic Program</div>
+      </div>
+      <div class="bar-right">
+        <button id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode">🌙</button>
+        <a href="/" class="btn btn-ghost">← Home</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE HEADER -->
+<header class="page-header">
+  <div class="wrap">
+    <div class="eyebrow">Coach Kunal Gaikwad · 100-Day Hybrid Athlete Program</div>
+    <h1 class="page-title">Are you gym fit,<br>or <em>athlete fit?</em></h1>
+    <p class="page-lede">Five stations, about 30 minutes. Enter your numbers and get your Hybrid Athlete Score out of 100, your level, and the one weakness holding you back.</p>
+    <div class="meta-chips">
+      <span class="chip">5 stations</span>
+      <span class="chip">20 pts each</span>
+      <span class="chip">Rest 5 min between tests</span>
+      <span class="chip">Order: Plank → Squats → Push-ups → Burpees → Run</span>
+    </div>
+  </div>
+</header>
+
+<!-- TEST GRID -->
+<div class="wrap">
+  <div class="test-grid">
+
+    <!-- LEFT: STATIONS -->
+    <div>
+      <!-- gender toggle -->
+      <div class="gender-bar">
+        <span class="lbl">Standards for</span>
+        <div class="seg" role="group" aria-label="Standards">
+          <button type="button" id="g-m" aria-pressed="true">Men</button>
+          <button type="button" id="g-f" aria-pressed="false">Women</button>
+        </div>
+        <span class="sample-note" id="sampleNote">Sample numbers loaded. <button type="button" id="clear">Clear and enter mine</button></span>
+      </div>
+
+      <div class="stations">
+
+        <div class="st" id="st-plank">
+          <div class="st-num">1</div>
+          <div>
+            <h3 class="st-title">Plank Hold</h3>
+            <p class="st-how">Forearms down, body in a straight line. Time stops when your hips sag or lift.</p>
+          </div>
+          <div class="st-pts"><b id="p-plank">0</b><small>/ 20</small></div>
+          <div class="st-inp">
+            <input id="plm" type="number" inputmode="numeric" min="0" max="20" aria-label="Plank minutes">
+            <span class="u">min</span>
+            <input id="pls" type="number" inputmode="numeric" min="0" max="59" aria-label="Plank seconds">
+            <span class="u">sec</span>
+          </div>
+          <div class="st-bar"><i id="b-plank"></i></div>
+        </div>
+
+        <div class="st" id="st-squat">
+          <div class="st-num">2</div>
+          <div>
+            <h3 class="st-title">Squats · 1 min</h3>
+            <p class="st-how">Bodyweight squats, feet shoulder-width. Hip crease below the knee, stand fully tall at the top. Max clean reps in 60 seconds.</p>
+          </div>
+          <div class="st-pts"><b id="p-squat">0</b><small>/ 20</small></div>
+          <div class="st-inp">
+            <input id="squat" type="number" inputmode="numeric" min="0" max="150" aria-label="Squat reps">
+            <span class="u">reps</span>
+          </div>
+          <div class="st-bar"><i id="b-squat"></i></div>
+        </div>
+
+        <div class="st" id="st-push">
+          <div class="st-num">3</div>
+          <div>
+            <h3 class="st-title">Push-ups · 2 min</h3>
+            <p class="st-how">Chest down to fist height, full lockout at the top. Rest in the top position only.</p>
+          </div>
+          <div class="st-pts"><b id="p-push">0</b><small>/ 20</small></div>
+          <div class="st-inp">
+            <input id="push" type="number" inputmode="numeric" min="0" max="200" aria-label="Push-up reps">
+            <span class="u">reps</span>
+          </div>
+          <div class="st-bar"><i id="b-push"></i></div>
+        </div>
+
+        <div class="st" id="st-burp">
+          <div class="st-num">4</div>
+          <div>
+            <h3 class="st-title">Burpees · 5 min</h3>
+            <p class="st-how">Chest touches the floor, stand tall and jump at the top. Count clean reps only.</p>
+          </div>
+          <div class="st-pts"><b id="p-burp">0</b><small>/ 20</small></div>
+          <div class="st-inp">
+            <input id="burp" type="number" inputmode="numeric" min="0" max="250" aria-label="Burpee reps">
+            <span class="u">reps</span>
+          </div>
+          <div class="st-bar"><i id="b-burp"></i></div>
+        </div>
+
+        <div class="st" id="st-run">
+          <div class="st-num">5</div>
+          <div>
+            <h3 class="st-title">1.6 km Run</h3>
+            <p class="st-how">Flat route or track (4 laps of 400 m). Run it as fast as you can. Leave blank if you did not finish.</p>
+          </div>
+          <div class="st-pts"><b id="p-run">0</b><small>/ 20</small></div>
+          <div class="st-inp">
+            <input id="rm" type="number" inputmode="numeric" min="0" max="30" aria-label="Run minutes">
+            <span class="u">min</span>
+            <input id="rs" type="number" inputmode="numeric" min="0" max="59" aria-label="Run seconds">
+            <span class="u">sec</span>
+          </div>
+          <div class="st-bar"><i id="b-run"></i></div>
+        </div>
+
+      </div><!-- /stations -->
+
+      <div class="legend">
+        <h2>How your score works</h2>
+        <ul>
+          <li>Each station earns 4, 8, 12, 16 or 20 points based on your result. A run you did not finish scores 0.</li>
+          <li>Total score = Plank + Squats + Push-ups + Burpees + Run, out of 100.</li>
+          <li>Levels: 0–39 Gym Fit · 40–59 Conditioned · 60–79 Hybrid · 80–100 Athlete.</li>
+          <li>Your weakest link is the station with the lowest points. Retest on Day 100 to see how far you've come.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- RIGHT: SCORE PANEL -->
+    <aside class="panel" aria-live="polite">
+      <div class="panel-eyebrow">Your Hybrid Athlete Score</div>
+      <div class="score-row">
+        <span class="score-big" id="total">0</span>
+        <span class="score-denom">/ 100</span>
+      </div>
+      <div>
+        <div class="level-name" id="level">Gym Fit</div>
+        <p class="level-desc" id="levdesc"></p>
+      </div>
+      <div class="ladder" id="ladder">
+        <div>Gym Fit</div><div>Conditioned</div><div>Hybrid</div><div>Athlete</div>
+      </div>
+      <div class="weakbox">
+        <span class="wt">Weakest link</span>
+        <h4 id="wname">—</h4>
+        <p id="wtip"></p>
+      </div>
+      <div class="panel-cta">
+        <b>Close the gap in 100 days</b>
+        <p>The 100-Day Hybrid Athlete Program with Coach Kunal Gaikwad is built to fix exactly this. Send your score to the team to get started.</p>
+      </div>
+      <button type="button" class="copy-btn" id="copy">Copy my results</button>
+    </aside>
+
+  </div><!-- /test-grid -->
+</div><!-- /wrap -->
+
+<script>
+/* ── THEME TOGGLE ────────────────────────────────────────────────── */
+(function(){
+  const saved = localStorage.getItem('ae-theme');
+  if (saved === 'light') document.documentElement.setAttribute('data-theme','light');
+})();
+function toggleTheme(){
+  const root = document.documentElement, btn = document.getElementById('theme-toggle');
+  if (root.getAttribute('data-theme') === 'light'){
+    root.removeAttribute('data-theme');
+    try{ localStorage.setItem('ae-theme','dark'); }catch(e){}
+    btn.textContent = '🌙';
+  } else {
+    root.setAttribute('data-theme','light');
+    try{ localStorage.setItem('ae-theme','light'); }catch(e){}
+    btn.textContent = '☀️';
+  }
+}
+document.addEventListener('DOMContentLoaded',function(){
+  const btn = document.getElementById('theme-toggle');
+  if (btn && document.documentElement.getAttribute('data-theme')==='light') btn.textContent='☀️';
+});
+
+/* ── SCORING LOGIC (verbatim from original) ──────────────────────── */
+const S={m:'m'}; let gender='m';
+const T={
+  run:{m:[[390,20],[450,16],[510,12],[600,8]],f:[[450,20],[510,16],[570,12],[660,8]]},
+  push:{m:[[60,20],[45,16],[30,12],[15,8]],f:[[40,20],[30,16],[20,12],[10,8]]},
+  burp:{m:[[100,20],[80,16],[60,12],[40,8]],f:[[85,20],[70,16],[50,12],[35,8]]},
+  plank:[[180,20],[120,16],[90,12],[60,8]],
+  squat:{m:[[50,20],[42,16],[34,12],[25,8]],f:[[45,20],[37,16],[30,12],[22,8]]}
+};
+const lower=(v,t)=>{for(const[l,p]of t) if(v<l) return p; return 4};
+const higher=(v,t)=>{for(const[l,p]of t) if(v>=l) return p; return 4};
+const $=id=>document.getElementById(id);
+const n=id=>{const v=$(id).value.trim();return v===''?null:Number(v)};
+const NAMES={squat:'Leg Endurance',plank:'Core Stability',push:'Upper-Body Endurance',burp:'Work Capacity',run:'Aerobic Engine'};
+const TIPS={
+  squat:'Your legs tire before your lungs do. Leg endurance drives every run, jump and sprint, so this is where the program builds your foundation.',
+  plank:'Your core gives out before your muscles do. That costs you power and posture when you are tired. Expect targeted core work from week one.',
+  push:'You have strength, but it fades fast under reps. You need muscular endurance, not just a heavier max.',
+  burp:'Your strength is there, your engine is not. Full-body conditioning under fatigue is your biggest opportunity.',
+  run:'You gas out over distance. Building your aerobic engine will lift every other score on this test.'
+};
+const LEVELS=[
+  [80,'Athlete','Strong and conditioned. The 100 days sharpens you to elite.'],
+  [60,'Hybrid','Solid base, but one or two gaps are holding you back.'],
+  [40,'Conditioned','Fit in the gym, but your engine runs out.'],
+  [0,'Gym Fit','You look fit, but you do not perform like it yet.']
+];
+function calc(){
+  const squat=n('squat'),push=n('push'),burp=n('burp');
+  const pl=(n('plm')??0)*60+(n('pls')??0),plEmpty=n('plm')===null&&n('pls')===null;
+  const run=(n('rm')??0)*60+(n('rs')??0),runEmpty=n('rm')===null&&n('rs')===null;
+  const p={
+    plank:plEmpty?0:higher(pl,T.plank),
+    squat:squat===null?0:higher(squat,T.squat[gender]),
+    push:push===null?0:higher(push,T.push[gender]),
+    burp:burp===null?0:higher(burp,T.burp[gender]),
+    run:runEmpty||run===0?0:lower(run,T.run[gender])
+  };
+  let total=0,weak=null;
+  for(const k in p){ total+=p[k]; $('p-'+k).textContent=p[k]; $('b-'+k).style.width=(p[k]*5)+'%'; }
+  for(const k of['run','burp','push','squat','plank']) if(weak===null||p[k]<p[weak]) weak=k;
+  document.querySelectorAll('.st').forEach(e=>e.classList.remove('weak'));
+  $('st-'+weak).classList.add('weak');
+  $('total').textContent=total;
+  const lv=LEVELS.find(l=>total>=l[0]);
+  $('level').textContent=lv[1]; $('levdesc').textContent=lv[2];
+  const idx=['Gym Fit','Conditioned','Hybrid','Athlete'].indexOf(lv[1]);
+  [...$('ladder').children].forEach((d,i)=>d.classList.toggle('on',i<=idx));
+  $('wname').textContent=NAMES[weak]+' ('+p[weak]+'/20)'; $('wtip').textContent=TIPS[weak];
+  S.last={p,total,lv:lv[1],weak};
+}
+function setG(g){gender=g;$('g-m').setAttribute('aria-pressed',g==='m');$('g-f').setAttribute('aria-pressed',g==='f');calc();}
+$('g-m').onclick=()=>setG('m'); $('g-f').onclick=()=>setG('f');
+document.querySelectorAll('input').forEach(i=>i.addEventListener('input',()=>{ $('sampleNote').hidden=true; calc(); }));
+const sample={squat:38,plm:2,pls:10,push:48,burp:55,rm:7,rs:50};
+for(const k in sample) $(k).value=sample[k];
+$('clear').onclick=()=>{document.querySelectorAll('input').forEach(i=>i.value='');$('sampleNote').hidden=true;calc();$('plm').focus();};
+$('copy').onclick=()=>{
+  const L=S.last,txt=`My Hybrid Athlete Score: ${L.total}/100 (${L.lv})\nPlank ${L.p.plank}/20 · Squats ${L.p.squat}/20 · Push-ups ${L.p.push}/20 · Burpees ${L.p.burp}/20 · Run ${L.p.run}/20\nWeakest link: ${NAMES[L.weak]}`;
+  const done=()=>{$('copy').textContent='Copied ✓';setTimeout(()=>$('copy').textContent='Copy my results',1800)};
+  try{navigator.clipboard.writeText(txt).then(done,()=>{$('copy').textContent='Copy failed — screenshot instead'});}catch(e){$('copy').textContent='Copy failed — screenshot instead'}
+};
+calc();
+</script>
+</body>
+</html>
