@@ -308,6 +308,80 @@ button { cursor: pointer; font-family: var(--font); border: none; }
   *, *::before, *::after { transition-duration: .01ms !important; }
   .st-bar i { transition: none; }
 }
+
+/* ── BIG CTA ─────────────────────────────────────────────────────── */
+#join-cta {
+  margin-top: 80px;
+  border-top: 1px solid var(--border);
+  padding-block: 100px;
+  text-align: center;
+}
+.cta-inner {
+  display: flex; flex-direction: column; align-items: center; gap: 20px;
+}
+.cta-pill {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--accent);
+}
+.cta-pill::before { content: ''; display: block; width: 24px; height: 2px; background: var(--accent); }
+.cta-pill::after  { content: ''; display: block; width: 24px; height: 2px; background: var(--accent); }
+.cta-heading {
+  font-family: var(--display); font-weight: 900;
+  font-size: clamp(44px, 7vw, 96px); line-height: .92;
+  text-transform: uppercase; letter-spacing: -.02em;
+  color: var(--white); max-width: 14ch;
+}
+.cta-heading em { color: var(--accent); font-style: italic; display: block; }
+.cta-sub {
+  font-size: clamp(15px, 2vw, 18px); color: var(--muted);
+  max-width: 520px; line-height: 1.7;
+}
+.cta-price-row {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: center;
+}
+.cta-price { font-family: var(--mono); font-size: 36px; font-weight: 700; color: var(--accent); }
+.cta-was   { font-family: var(--mono); font-size: 18px; color: var(--muted); text-decoration: line-through; }
+.cta-badge {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  background: var(--accent); color: var(--accent-fg);
+  padding: 4px 12px; border-radius: 999px;
+}
+.btn-cta {
+  background: var(--accent); color: var(--accent-fg);
+  font-family: var(--font); font-size: 17px; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase;
+  padding: 18px 44px; border-radius: 14px; border: none; cursor: pointer;
+  box-shadow: 0 4px 24px color-mix(in srgb, var(--accent) 40%, transparent);
+  transition: opacity .15s, transform .15s;
+}
+.btn-cta:hover { opacity: .88; transform: translateY(-2px); }
+.cta-note { font-size: 13px; color: var(--muted); }
+.cta-note strong { color: var(--text); }
+
+/* ── MODAL ───────────────────────────────────────────────────────── */
+#overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.75); z-index: 200;
+  align-items: center; justify-content: center; padding: 20px;
+}
+#overlay.on { display: flex; }
+#modal-box {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+  padding: 40px 40px 0; max-width: 520px; width: 100%; position: relative;
+  max-height: 90vh; overflow-y: auto;
+}
+#modal-x {
+  position: absolute; top: 14px; right: 16px;
+  background: none; color: var(--muted); font-size: 20px;
+  line-height: 1; padding: 4px 8px; border: none; cursor: pointer;
+}
+#modal-x:hover { color: var(--text); }
+
+@media (max-width: 500px) {
+  #join-cta { padding-block: 64px; margin-top: 48px; }
+  #modal-box { padding: 28px 20px; }
+}
 </style>
 </head>
 <body>
@@ -481,6 +555,35 @@ button { cursor: pointer; font-family: var(--font); border: none; }
   </div><!-- /test-grid -->
 </div><!-- /wrap -->
 
+<!-- ── BIG CTA ─────────────────────────────────────────────────── -->
+<section id="join-cta">
+  <div class="wrap">
+    <div class="cta-inner">
+      <div class="cta-pill">100-Day Hybrid Athlete Program</div>
+      <h2 class="cta-heading">Now you know<br>your <em>weakest link.</em></h2>
+      <p class="cta-sub">Coach Kunal Gaikwad's 100-Day program is built to fix it — six sessions a week, four phases, one transformation. Early access is open now.</p>
+      <div class="cta-price-row">
+        <span class="cta-price">Rs 1,399</span>
+        <span class="cta-was">Rs 1,999</span>
+        <span class="cta-badge">Early Access</span>
+      </div>
+      <button class="btn btn-cta" onclick="openModal()">Join the Waitlist →</button>
+      <p class="cta-note">1:1 coaching plan available at <strong>Rs 6,999</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- WAITLIST MODAL -->
+<div id="overlay" role="dialog" aria-modal="true" aria-label="Join waitlist">
+  <div id="modal-box">
+    <button id="modal-x" onclick="closeModal()" aria-label="Close">✕</button>
+    <iframe id="tally-iframe"
+      src="https://tally.so/embed/pbjjb1?alignLeft=1&hideTitle=0&transparentBackground=1&dynamicHeight=1"
+      width="100%" height="500" frameborder="0" marginheight="0" marginwidth="0"
+      title="Athlete Engine Waitlist" style="display:block;"></iframe>
+  </div>
+</div>
+
 <script>
 /* ── THEME TOGGLE ────────────────────────────────────────────────── */
 (function(){
@@ -567,6 +670,18 @@ $('copy').onclick=()=>{
   try{navigator.clipboard.writeText(txt).then(done,()=>{$('copy').textContent='Copy failed — screenshot instead'});}catch(e){$('copy').textContent='Copy failed — screenshot instead'}
 };
 calc();
+
+/* ── MODAL ───────────────────────────────────────────────────────── */
+function openModal(){
+  document.getElementById('overlay').classList.add('on');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){
+  document.getElementById('overlay').classList.remove('on');
+  document.body.style.overflow='';
+}
+document.getElementById('overlay').addEventListener('click',e=>{ if(e.target===e.currentTarget) closeModal(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
 </script>
 </body>
 </html>
