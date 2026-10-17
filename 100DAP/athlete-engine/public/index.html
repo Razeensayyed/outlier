@@ -118,7 +118,7 @@ a { color: inherit; text-decoration: none; }
 #bar {
   position: fixed;
   top: max(16px, env(safe-area-inset-top, 16px));
-  left: 50%; transform: translateX(-50%) translateY(-140%);
+  left: 50%; transform: translateX(-50%);
   z-index: 100;
   width: calc(100% - 40px); max-width: 1060px;
   border-radius: 20px;
@@ -139,12 +139,7 @@ a { color: inherit; text-decoration: none; }
     0 8px 32px rgba(0,0,0,.45),
     0 1px 0 rgba(255,255,255,.12) inset,
     0 -1px 0 rgba(0,0,0,.2) inset;
-  transition: transform .4s cubic-bezier(.22,1,.36,1), opacity .3s;
-  opacity: 0;
-}
-#bar.on {
-  transform: translateX(-50%) translateY(0);
-  opacity: 1;
+  transition: box-shadow .3s;
 }
 /* light mode glass */
 :root[data-theme="light"] #bar {
@@ -190,7 +185,8 @@ a { color: inherit; text-decoration: none; }
 
 /* ── HERO ────────────────────────────────────────────────────────── */
 #hero {
-  padding-block: 110px 100px;
+  padding-top: 160px;
+  padding-bottom: 100px;
   border-bottom: 1px solid var(--border);
 }
 .hero-pill {
@@ -1153,11 +1149,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-// sticky bar
-const bar = document.getElementById('bar');
-window.addEventListener('scroll', () => {
-  bar.classList.toggle('on', window.scrollY > 180);
-}, { passive: true });
 
 // modal
 function openModal() {
