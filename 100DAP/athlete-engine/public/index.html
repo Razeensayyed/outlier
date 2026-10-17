@@ -114,24 +114,79 @@ a { color: inherit; text-decoration: none; }
 .btn-outline { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
 .btn-ghost   { background: var(--bg-3); color: var(--text); border: 1px solid var(--border-2); }
 
-/* ── STICKY BAR ──────────────────────────────────────────────────── */
+/* ── LIQUID GLASS NAVBAR ─────────────────────────────────────────── */
 #bar {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  background: var(--bar-bg);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--border);
-  padding-top: env(safe-area-inset-top,0px);
-  transform: translateY(-110%);
-  transition: transform .3s ease;
+  position: fixed;
+  top: max(16px, env(safe-area-inset-top, 16px));
+  left: 50%; transform: translateX(-50%) translateY(-140%);
+  z-index: 100;
+  width: calc(100% - 40px); max-width: 1060px;
+  border-radius: 20px;
+  /* glass layers */
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,.08) 0%,
+    rgba(255,255,255,.03) 50%,
+    rgba(255,255,255,.06) 100%
+  );
+  backdrop-filter: blur(28px) saturate(200%) brightness(1.1);
+  -webkit-backdrop-filter: blur(28px) saturate(200%) brightness(1.1);
+  /* border: thin highlight on top/left, subtle on bottom */
+  border: 1px solid rgba(255,255,255,.18);
+  border-bottom-color: rgba(255,255,255,.07);
+  /* depth */
+  box-shadow:
+    0 8px 32px rgba(0,0,0,.45),
+    0 1px 0 rgba(255,255,255,.12) inset,
+    0 -1px 0 rgba(0,0,0,.2) inset;
+  transition: transform .4s cubic-bezier(.22,1,.36,1), opacity .3s;
+  opacity: 0;
 }
-#bar.on { transform: translateY(0); }
+#bar.on {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+/* light mode glass */
+:root[data-theme="light"] #bar {
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,.65) 0%,
+    rgba(255,255,255,.45) 50%,
+    rgba(255,255,255,.55) 100%
+  );
+  border-color: rgba(255,255,255,.9);
+  border-bottom-color: rgba(200,200,200,.4);
+  box-shadow:
+    0 8px 32px rgba(0,0,0,.12),
+    0 1px 0 rgba(255,255,255,.9) inset,
+    0 -1px 0 rgba(0,0,0,.05) inset;
+}
 .bar-inner {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  padding-block: 12px; flex-wrap: wrap;
+  padding: 10px 20px; flex-wrap: nowrap;
 }
-.bar-brand { display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 900; text-transform: uppercase; letter-spacing: .05em; color: var(--white); }
-.bar-logo  { height: 32px; width: auto; display: block; }
-.bar-meta  { font-size: 12px; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
+.bar-brand { display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 900; text-transform: uppercase; letter-spacing: .05em; color: var(--white); }
+.bar-logo  { height: 30px; width: auto; display: block; }
+.bar-meta  { font-size: 11px; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
+/* glass toggle button */
+#theme-toggle {
+  background: rgba(255,255,255,.08) !important;
+  border: 1px solid rgba(255,255,255,.18) !important;
+  border-radius: 10px !important;
+  padding: 6px 10px !important;
+  backdrop-filter: blur(4px);
+  transition: background .2s, transform .15s !important;
+}
+#theme-toggle:hover { background: rgba(255,255,255,.15) !important; transform: scale(1.05); }
+:root[data-theme="light"] #theme-toggle {
+  background: rgba(0,0,0,.06) !important;
+  border-color: rgba(0,0,0,.12) !important;
+}
+/* glass CTA button */
+#bar .btn-accent {
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.3);
+}
 
 /* ── HERO ────────────────────────────────────────────────────────── */
 #hero {
@@ -462,8 +517,9 @@ footer { border-top: 1px solid var(--border); padding-block: 40px; }
   .frow            { grid-template-columns: 1fr; }
 
   .bar-meta        { display: none; }
-  .bar-inner       { padding-block: 10px; gap: 10px; flex-wrap: nowrap; }
-  .bar-inner .btn  { padding: 10px 16px; font-size: 13px; white-space: nowrap; }
+  #bar             { width: calc(100% - 24px); border-radius: 16px; }
+  .bar-inner       { padding: 8px 14px; gap: 8px; }
+  .bar-inner .btn  { padding: 9px 14px; font-size: 12px; white-space: nowrap; }
 
   #modal-box       { padding: 28px 20px; }
 }
