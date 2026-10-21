@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carousel Ad Generator</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --border: #2e2e2e;
+      --accent: #c9a96e;
+      --accent-dim: #a07c45;
+      --text: #f0f0f0;
+      --muted: #888;
+      --radius: 10px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px 80px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+    }
+
+    header p {
+      color: var(--muted);
+      margin-top: 8px;
+      font-size: 0.95rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      width: 100%;
+      max-width: 640px;
+    }
+
+    .field {
+      margin-bottom: 22px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    input[type="text"],
+    input[type="color"],
+    select,
+    textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.95rem;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .color-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .color-field {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .color-field input[type="color"] {
+      width: 44px;
+      height: 44px;
+      padding: 2px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .color-field input[type="text"] {
+      flex: 1;
+    }
+
+    /* Drop zone */
+    .dropzone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 36px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+
+    .dropzone.dragging {
+      border-color: var(--accent);
+      background: rgba(201, 169, 110, 0.05);
+    }
+
+    .dropzone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .dropzone-icon { font-size: 2.4rem; margin-bottom: 10px; }
+    .dropzone p { color: var(--muted); font-size: 0.9rem; }
+    .dropzone span { color: var(--accent); }
+
+    .preview-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .preview-grid img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      background: var(--accent);
+      color: #0f0f0f;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.04em;
+      padding: 14px;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 8px;
+    }
+
+    .btn:hover { background: var(--accent-dim); }
+    .btn:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+
+    .status {
+      text-align: center;
+      margin-top: 28px;
+      font-size: 0.95rem;
+      color: var(--muted);
+      display: none;
+    }
+
+    .status.visible { display: block; }
+
+    .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 18px;
+      background: var(--accent);
+      color: #0f0f0f;
+      font-weight: 700;
+      padding: 12px 28px;
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 16px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.4s;
+      animation: indeterminate 1.6s ease-in-out infinite;
+    }
+
+    @keyframes indeterminate {
+      0%   { transform: translateX(-100%) scaleX(0.5); }
+      50%  { transform: translateX(50%) scaleX(0.5); }
+      100% { transform: translateX(200%) scaleX(0.5); }
+    }
+
+    .error { color: #e06c75; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Carousel Ad Generator</h1>
+    <p>Upload product photos → get Instagram-ready carousel PNGs as a ZIP</p>
+  </header>
+
+  <div class="card">
+    <form id="genForm">
+
+      <div class="field">
+        <label>Product Photos</label>
+        <div class="dropzone" id="dropzone">
+          <input type="file" name="photos" id="photoInput" accept="image/*" multiple required />
+          <div class="dropzone-icon">📷</div>
+          <p><span>Click to upload</span> or drag &amp; drop</p>
+          <p style="margin-top:4px">PNG, JPG, WEBP — multiple allowed</p>
+        </div>
+        <div class="preview-grid" id="previewGrid"></div>
+      </div>
+
+      <div class="field">
+        <label>Brand Name</label>
+        <input type="text" name="brand_name" placeholder="e.g. LUMÉ" required />
+      </div>
+
+      <div class="field">
+        <label>Product Name</label>
+        <input type="text" name="product_name" placeholder="e.g. Hydrating Face Serum" required />
+      </div>
+
+      <div class="field">
+        <label>Tagline <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
+        <input type="text" name="tagline" placeholder="e.g. Glow from within" />
+      </div>
+
+      <div class="field">
+        <label>Visual Vibe</label>
+        <select name="vibe">
+          <option value="minimal">Minimal</option>
+          <option value="luxury">Luxury</option>
+          <option value="bold">Bold</option>
+          <option value="playful">Playful</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Colors</label>
+        <div class="color-row">
+          <div>
+            <label style="margin-bottom:6px">Primary (bg)</label>
+            <div class="color-field">
+              <input type="color" id="primaryPicker" value="#1a1a1a" />
+              <input type="text" id="primaryHex" name="primary_color" value="#1a1a1a" maxlength="7" />
+            </div>
+          </div>
+          <div>
+            <label style="margin-bottom:6px">Accent (text/btn)</label>
+            <div class="color-field">
+              <input type="color" id="accentPicker" value="#c9a96e" />
+              <input type="text" id="accentHex" name="accent_color" value="#c9a96e" maxlength="7" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn" id="submitBtn">Generate Carousel</button>
+    </form>
+
+    <div class="status" id="status">
+      <div class="progress-bar"><div class="progress-fill"></div></div>
+      <p id="statusMsg" style="margin-top:14px">Processing your photos…</p>
+    </div>
+  </div>
+
+  <script>
+    // Color picker sync
+    function syncColor(picker, hex) {
+      picker.addEventListener("input", () => hex.value = picker.value);
+      hex.addEventListener("input", () => {
+        if (/^#[0-9a-fA-F]{6}$/.test(hex.value)) picker.value = hex.value;
+      });
+    }
+    syncColor(document.getElementById("primaryPicker"), document.getElementById("primaryHex"));
+    syncColor(document.getElementById("accentPicker"), document.getElementById("accentHex"));
+
+    // Drop zone
+    const dz = document.getElementById("dropzone");
+    const input = document.getElementById("photoInput");
+    const grid = document.getElementById("previewGrid");
+
+    dz.addEventListener("dragover", e => { e.preventDefault(); dz.classList.add("dragging"); });
+    dz.addEventListener("dragleave", () => dz.classList.remove("dragging"));
+    dz.addEventListener("drop", e => {
+      e.preventDefault();
+      dz.classList.remove("dragging");
+      input.files = e.dataTransfer.files;
+      renderPreviews(e.dataTransfer.files);
+    });
+
+    input.addEventListener("change", () => renderPreviews(input.files));
+
+    function renderPreviews(files) {
+      grid.innerHTML = "";
+      Array.from(files).forEach(f => {
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(f);
+        grid.appendChild(img);
+      });
+    }
+
+    // Form submit
+    document.getElementById("genForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const form = e.target;
+      const btn = document.getElementById("submitBtn");
+      const status = document.getElementById("status");
+      const msg = document.getElementById("statusMsg");
+
+      btn.disabled = true;
+      btn.textContent = "Generating…";
+      status.classList.add("visible");
+      msg.textContent = "Processing your photos… this may take 30–90 seconds.";
+      msg.className = "";
+
+      try {
+        const fd = new FormData(form);
+        const res = await fetch("/generate", { method: "POST", body: fd });
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.detail || "Server error");
+
+        msg.innerHTML = `
+          ✅ Your carousel is ready!<br/>
+          <a class="download-link" href="${data.download_url}" download>
+            ⬇ Download ZIP
+          </a>
+        `;
+      } catch (err) {
+        msg.textContent = "Error: " + err.message;
+        msg.className = "error";
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Generate Carousel";
+      }
+    });
+  </script>
+</body>
+</html>
